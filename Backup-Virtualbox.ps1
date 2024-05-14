@@ -22,6 +22,9 @@ and should stay offline.
 .EXAMPLE
 .\Backup-VirtualBox.ps1 -VM 'TESTVM' -Destination D:\Test\TESTVM -Compress -StartAfterBackup -Verbose
 
+Production calling:
+-File D:\Projects\Backup-VirtualBox-PowerShell\Backup-Virtualbox.ps1 -VM "CentOS 7 Gitlab" -Destination "Z:\backup\Licogi19_MainServer" -StartAfterBackup -Compress -Verbose
+
 .LINK
 https://www.techrepublic.com/article/how-to-import-and-export-virtualbox-appliances-from-the-command-line/
 https://www.virtualbox.org/manual/ch08.html
@@ -69,10 +72,10 @@ function Get-RunningVirtualBox($VM)
     }
 }
 
-#$Date = Get-Date -format "yyyyMMdd"
-$Date = "backup"
+$Date = Get-Date -format "yyyyMMdd"
+#$Date = "backup"
 $VBoxManage = 'C:\Program Files\Oracle\VirtualBox\VBoxManage.exe'
-$OVA = "$VM-$Date.ova"
+$OVA = "$VM-backup.ova"
 $OVAPath = $PSScriptRoot + "\" + $OVA
 
 Write-Verbose "Stopping $VM"
@@ -95,6 +98,12 @@ While(Get-RunningVirtualBox($VM))
 {
     Start-Sleep -Seconds 1
 }
+
+Write-Verbose "Take snapshot"
+<#
+VBoxManage snapshot MyVM take MySnapShot
+#>
+Start-Process $VBoxManage -ArgumentList "snapshot ""$VM"" take $Date" -Wait -WindowStyle Hidden
 
 Write-Verbose "Exporting the VM appliance of $VM as $OVA"
 Start-Process $VBoxManage -ArgumentList "export ""$VM"" -o ""$OVAPath""" -Wait -WindowStyle Hidden
