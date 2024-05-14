@@ -69,7 +69,8 @@ function Get-RunningVirtualBox($VM)
     }
 }
 
-$Date = Get-Date -format "yyyyMMdd"
+#$Date = Get-Date -format "yyyyMMdd"
+$Date = "backup"
 $VBoxManage = 'C:\Program Files\Oracle\VirtualBox\VBoxManage.exe'
 $OVA = "$VM-$Date.ova"
 $OVAPath = $PSScriptRoot + "\" + $OVA
